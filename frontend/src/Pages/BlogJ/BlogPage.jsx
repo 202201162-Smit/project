@@ -48,7 +48,7 @@ export const BlogPage = () => {
       const fetchSuggestions = async () => {
         try {
           const response = await axios.get(
-            `${config.BACKEND_API || "http://localhost:3000/"}api/blog/suggestions?q=${debouncedQuery}`
+            `${config.BACKEND_API || "http://localhost:3000"}/api/blog/suggestions?q=${debouncedQuery}`
           );
           setSuggestions(response.data);
           setShowSuggestions(true);
