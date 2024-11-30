@@ -1,5 +1,5 @@
 const config = {
-    BACKEND_API: "https://project-backend-six-lac.vercel.app",
+    BACKEND_API: "",
   };
   
 export default config;

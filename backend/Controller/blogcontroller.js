@@ -5,9 +5,10 @@ const {upload} = require("../middleware/multer")
 
 const createBlog = async (req, res) => {
 
-  console.log(req.body);
+  console.log(req);
   
   upload(req, res, async(err) => {
+    console.log(err);
     if (err) {
       return res.status(500).json({ message: 'File upload error', error: err });
     }
