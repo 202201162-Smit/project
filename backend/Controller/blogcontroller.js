@@ -1,55 +1,54 @@
 const cloudinary = require('../config/cloudinary'); // Import Cloudinary config
 const Blog = require('../Models/Blog'); // Import Blog model
-const { uploadOnCloudinary } = require("../config/cloudinary");
-const {upload} = require("../middleware/multer")
+const {uploadOnCloudinary} = require("../config/cloudinary");
+// const { upload } = require("../middleware/multer")
 
 const createBlog = async (req, res) => {
+  try {
+    const { title, content, date, college, clubId } = req.body;
 
-  console.log(req);
-  
-  upload(req, res, async(err) => {
-    console.log(err);
-    if (err) {
-      return res.status(500).json({ message: 'File upload error', error: err });
+    console.log("Request Body:", req.body);
+    console.log("Uploaded Files:", req.files);
+
+    // Validate required fields
+    if (!title || !content || !college || !clubId) {
+      return res.status(400).json({ message: "Missing required fields" });
     }
-    
-    console.log(req.body);
 
-    try {
-      const { title, content, date, college, clubId} = req.body;
-
-      // Access uploaded files
-      const uploadedFiles = req.files;
-
-      const imageUrls = await Promise.all(
-          uploadedFiles.map(async (file) => {
-          const uploadResult = await uploadOnCloudinary(file.path, "/eventsphere/blog");
-          return uploadResult ? uploadResult.url : null;
-          })
-      );
-  
-      //   // Create a new blog post and save it to the database
-      const newBlog = new Blog({
-          title,
-          content,
-          college,
-          date,
-          images: imageUrls,
-          clubId: clubId,
-      });
-      await newBlog.save();
-      res.status(201).json({
-              message: 'Blog created successfully!',
-              blog: newBlog,
-            });
-    } catch (error) {
-      console.error(error);
-        res.status(500).json({
-          message: 'An error occurred while creating the blog',
-          error: error.message,
-        });
+    // Access uploaded file
+    const uploadedFile = req.files?.image?.[0];
+    if (!uploadedFile) {
+      return res.status(400).json({ message: "No image file uploaded" });
     }
-  });
+
+    // Upload file to Cloudinary
+    const uploadResult = await uploadOnCloudinary(uploadedFile.buffer, "image");
+    if (!uploadResult || !uploadResult.secure_url) {
+      return res.status(500).json({ message: "Failed to upload image to Cloudinary" });
+    }
+
+    // Create a new blog post and save to database
+    const newBlog = new Blog({
+      title,
+      content,
+      college,
+      date,
+      images: [uploadResult.secure_url],
+      clubId,
+    });
+    await newBlog.save();
+
+    res.status(201).json({
+      message: "Blog created successfully!",
+      blog: newBlog,
+    });
+  } catch (error) {
+    console.error("Error creating blog:", error.message);
+    res.status(500).json({
+      message: "An error occurred while creating the blog",
+      error: error.message,
+    });
+  }
 };
 
 // Function to get all blogs

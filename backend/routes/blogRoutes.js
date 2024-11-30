@@ -27,7 +27,7 @@ router.get('/suggestions', async (req, res) => {
 });
 
 // Blog creation route - only accessible by colleges
-router.post("/create", blogController.createBlog);
+router.post("/create",upload.fields([{ name: 'image', maxCount: 1 }]), blogController.createBlog);
 
 // Get all blogs (public access)
 router.get('/', blogController.getBlogs);  

@@ -4,33 +4,45 @@ require('dotenv').config(); // Ensure dotenv is loaded to access environment var
 const fs = require("fs");
 
 
-exports.cloudinaryConnect = () => {
-    try {
+// exports.cloudinaryConnect = () => {
+//     try {
         cloudinary.config({
             cloud_name: "dggywuuhe",
             api_key: "325745837459845",
             api_secret: "Jsykss5EK86X6K0vTPbA8-eZR8s",
         });
-    } catch (error) {
-        console.log(error);
-    }
+    // } catch (error) {
+    //     console.log(error);
+    // }
+// };
+
+exports.uploadOnCloudinary = (fileBuffer, resourceType) => {
+    return new Promise((resolve, reject) => {
+      const uploadStream = cloudinary.uploader.upload_stream(
+        { resource_type: resourceType },
+        (error, result) => {
+          if (error) reject(error);
+          else resolve(result);
+        }
+      );
+      uploadStream.end(fileBuffer);
+  });
 };
 
-exports.uploadOnCloudinary = async (localFilePath, folder) => {
-    try {
-        if (!localFilePath) return null
-        //upload the file on cloudinary
-        const response = await cloudinary.uploader.upload(localFilePath, {
-            resource_type: "auto",
-            folder:folder
-        })
-        // file has been uploaded successful
-        fs.unlinkSync(localFilePath)
-        return response;
+// exports.uploadOnCloudinary = async (localFilePath, folder) => {
+//     try {
+//         if (!localFilePath) return null
+//         //upload the file on cloudinary
+//         const response = await cloudinary.uploader.upload(localFilePath, {
+//             resource_type: "auto",
+//             folder:folder
+//         })
+//         // file has been uploaded successful
+//         fs.unlinkSync(localFilePath)
+//         return response;
 
-    } catch (error) {
-        fs.unlinkSync(localFilePath) 
-        return null;
-    }
-}
-
+//     } catch (error) {
+//         fs.unlinkSync(localFilePath) 
+//         return null;
+//     }
+// }

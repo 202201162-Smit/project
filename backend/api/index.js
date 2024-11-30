@@ -54,6 +54,6 @@ connectDb().then(() => {
         console.log(`Server is running at port: ${PORT}`);
     });
 });
-cloudinaryConnect();
+// cloudinaryConnect();
 
 module.exports = app;

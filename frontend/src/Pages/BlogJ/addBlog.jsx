@@ -3,7 +3,6 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import Navbar from "../Home/Navbar";
 import Footer from "../Home/Footer";
-import EventDescription from "../Event_listing_page/eventDescription";
 import Cookies from "js-cookie";
 import config from "../../config";
 
@@ -13,14 +12,32 @@ export const AddBlog = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
 
+  // State for form fields
+  const [title, setTitle] = useState("");
+  const [college, setCollege] = useState("");
+  const [content, setContent] = useState("");
+  const [posters, setImage] = useState(null); // File input state
+
   // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true); // Set loading state to true when submission starts
 
-    const submissionData = new FormData(e.target);
+    // Create FormData object
+    const submissionData = new FormData();
+    submissionData.append("title", title);
+    submissionData.append("college", college);
+    submissionData.append("content", content);
     submissionData.append("clubId", userId);
     submissionData.append("date", Date.now());
+
+    // Append image if selected
+    if (posters) {
+      submissionData.append("image", posters); // Key name matches backend expectation
+    }
+
+    console.log(...submissionData); // Debugging
+
     try {
       await axios.post(`${config.BACKEND_API || "http://localhost:3000"}/api/blog/create`, submissionData, {
         headers: {
@@ -47,27 +64,19 @@ export const AddBlog = () => {
               <label className="block text-lg font-medium text-yellow-400">Title</label>
               <input
                 type="text"
-                name="title"
+                value={title}
+                onChange={(e) => setTitle(e.target.value)} // Update state
                 className="w-full p-3 border border-gray-600 rounded-md bg-gray-800 text-gray-200 focus:border-yellow-400 focus:ring focus:ring-yellow-200"
                 required
               />
             </div>
 
-            {/* <div className="form-group">
-              <label className="block text-lg font-medium text-yellow-400">Date</label>
-              <input
-                type="date"
-                name="date"
-                className="w-full p-3 border border-gray-600 rounded-md bg-gray-800 text-gray-200 focus:border-yellow-400 focus:ring focus:ring-yellow-200"
-                required
-              />
-            </div> */}
-
             <div className="form-group">
               <label className="block text-lg font-medium text-yellow-400">College</label>
               <input
                 type="text"
-                name="college"
+                value={college}
+                onChange={(e) => setCollege(e.target.value)} // Update state
                 className="w-full p-3 border border-gray-600 rounded-md bg-gray-800 text-gray-200 focus:border-yellow-400 focus:ring focus:ring-yellow-200"
                 required
               />
@@ -76,18 +85,19 @@ export const AddBlog = () => {
             <div className="form-group">
               <label className="block text-lg font-bold text-yellow-400">Content</label>
               <textarea
-                name="content"
+                value={content}
+                onChange={(e) => setContent(e.target.value)} // Update state
                 className="w-full p-3 border border-gray-700 rounded-md bg-gray-800 text-gray-200 focus:border-yellow-400 focus:ring focus:ring-yellow-200"
                 rows="5"
-                required />
+                required
+              />
             </div>
 
             <div className="form-group">
               <label className="block text-lg font-medium text-yellow-400">Images</label>
               <input
-                name="posters"
                 type="file"
-                multiple
+                onChange={(e) => setImage(e.target.files[0])} // Set the selected file to state
                 className="w-full p-3 border border-gray-600 rounded-md bg-gray-800 text-gray-200 focus:border-yellow-400 focus:ring focus:ring-yellow-200"
               />
             </div>
