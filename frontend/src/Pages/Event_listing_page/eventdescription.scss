@@ -1,0 +1,64 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+}
+
+.event-description {
+  max-width: 46.9vw;
+
+  strong {
+    font-size: 3vh;
+    font-weight: 700;
+  }
+
+  label {
+    font-weight: bold;
+    margin-bottom: 1vh;
+    color: #f1c40f; // Yellow for label text to match theme
+  }
+
+  .ql-toolbar {
+    background-color: #f9f9f9;
+    border-radius: 1vh;
+    margin-top: 1vh;
+    margin-bottom: 1vh;
+    border: 1px solid #333; // Dark border for contrast
+    padding: 5px;
+
+    .ql-picker, .ql-stroke, .ql-fill {
+      color: #333;
+      stroke: #333;
+    }
+  }
+
+  .ql-container {
+    border-radius: 1vh;
+    min-height: 40vh;
+    background-color: #E0F7FA; // Light blue background for text area
+    border: 1px solid #333; // Dark border for text area
+    padding: 1vh;
+
+    .ql-editor {
+      padding: 1vh;
+      font-size: 16px;
+      color: #070707; // Dark text color for readability
+      line-height: 1.5;
+      min-height: 35vh; // Ensures text area doesn't collapse when empty
+
+      a {
+        color: #007bff;
+        text-decoration: underline;
+
+        &:hover {
+          cursor: pointer;
+        }
+      }
+
+      &::placeholder {
+        color: #888; // Placeholder color
+      }
+    }
+  }
+}
